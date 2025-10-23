@@ -1,0 +1,609 @@
+---
+alwaysApply: true
+---
+
+# 프론트엔드 설계 가이드라인
+
+이 문서는 주요 프론트엔드 설계 원칙과 규칙을 요약하며, 권장 패턴을 보여줍니다.
+프론트엔드 코드를 작성할 때 이 가이드라인을 따르세요.
+
+# 가독성
+
+코드의 명확성과 이해 용이성을 향상시킵니다.
+
+## 매직 넘버 네이밍
+
+규칙: 명확성을 위해 매직 넘버를 이름이 있는 상수로 교체하세요.
+이유:
+
+설명되지 않은 값에 의미를 부여하여 명확성을 향상시킵니다.
+유지보수성을 향상시킵니다.
+
+### 권장 패턴:
+
+```typescript
+const ANIMATION_DELAY_MS = 300;
+
+async function onLikeClick() {
+  await postLike(url);
+  await delay(ANIMATION_DELAY_MS); // 애니메이션 대기 중임을 명확히 표시
+  await refetchPostLike();
+}
+```
+
+## 구현 세부사항 추상화
+
+규칙: 복잡한 로직/상호작용을 전용 컴포넌트/HOC로 추상화하세요.
+이유:
+
+관심사를 분리하여 인지 부하를 줄입니다.
+컴포넌트의 가독성, 테스트 가능성, 유지보수성을 향상시킵니다.
+
+#### 권장 패턴 1: 인증 가드
+
+(로그인 확인을 래퍼/가드 컴포넌트로 추상화)
+
+```tsx
+function App() {
+  return (
+    <AuthGuard>
+      {' '}
+      {/* 래퍼가 인증 확인 처리 */}
+      <LoginStartPage />
+    </AuthGuard>
+  );
+}
+
+// AuthGuard 컴포넌트가 확인/리다이렉트 로직을 캡슐화
+function AuthGuard({ children }) {
+  const status = useCheckLoginStatus();
+  useEffect(() => {
+    if (status === 'LOGGED_IN') {
+      location.href = '/home';
+    }
+  }, [status]);
+
+  // 로그인하지 않은 경우에만 children 렌더링, 그렇지 않으면 null(또는 로딩) 렌더링
+  return status !== 'LOGGED_IN' ? children : null;
+}
+
+// LoginStartPage는 이제 더 단순하고, 로그인 UI/로직에만 집중
+function LoginStartPage() {
+  // ... 로그인 관련 로직만 ...
+  return <>{/* ... 로그인 관련 컴포넌트 ... */}</>;
+}
+```
+
+#### 권장 패턴 2: 전용 상호작용 컴포넌트
+
+(다이얼로그 로직을 전용 InviteButton 컴포넌트로 추상화)
+
+```tsx
+export function FriendInvitation() {
+  const { data } = useQuery(/* ... */);
+
+  return (
+    <>
+      {/* 전용 버튼 컴포넌트 사용 */}
+      <InviteButton name={data.name} />
+      {/* ... 기타 UI ... */}
+    </>
+  );
+}
+
+// InviteButton이 확인 플로우를 내부적으로 처리
+function InviteButton({ name }) {
+  const handleClick = async () => {
+    const canInvite = await overlay.openAsync(({ isOpen, close }) => (
+      <ConfirmDialog
+        title={`${name}님과 공유`}
+        // ... 다이얼로그 설정 ...
+      />
+    ));
+
+    if (canInvite) {
+      await sendPush();
+    }
+  };
+
+  return <Button onClick={handleClick}>초대하기</Button>;
+}
+```
+
+## 조건부 렌더링을 위한 코드 경로 분리
+
+규칙: 크게 다른 조건부 UI/로직을 별도의 컴포넌트로 분리하세요.
+이유:
+
+하나의 컴포넌트 내에서 복잡한 조건문을 피하여 가독성을 향상시킵니다.
+각 전문화된 컴포넌트가 명확하고 단일한 책임을 갖도록 보장합니다.
+
+권장 패턴:
+(각 역할에 대한 별도 컴포넌트)
+
+```tsx
+function SubmitButton() {
+  const isViewer = useRole() === 'viewer';
+
+  // 전문화된 컴포넌트에 렌더링 위임
+  return isViewer ? <ViewerSubmitButton /> : <AdminSubmitButton />;
+}
+
+// 'viewer' 역할 전용 컴포넌트
+function ViewerSubmitButton() {
+  return <TextButton disabled>제출</TextButton>;
+}
+
+// 'admin'(또는 viewer가 아닌) 역할 전용 컴포넌트
+function AdminSubmitButton() {
+  useEffect(() => {
+    showAnimation(); // 애니메이션 로직이 여기에 격리됨
+  }, []);
+
+  return <Button type="submit">제출</Button>;
+}
+```
+
+## 복잡한 삼항 연산자 단순화
+
+규칙: 복잡하거나 중첩된 삼항 연산자를 if/else 또는 IIFE로 교체하여 가독성을 높이세요.
+이유:
+
+조건부 로직을 빠르게 따라가기 쉽게 만듭니다.
+전반적인 코드 유지보수성을 향상시킵니다.
+
+#### 권장 패턴:
+
+(if 문이 있는 IIFE 사용)
+
+```typescript
+const status = (() => {
+  if (ACondition && BCondition) return 'BOTH';
+  if (ACondition) return 'A';
+  if (BCondition) return 'B';
+  return 'NONE';
+})();
+```
+
+## 시선 이동 줄이기 (간단한 로직 함께 배치)
+
+규칙: 간단하고 지역적인 로직을 함께 배치하거나 인라인 정의를 사용하여 문맥 전환을 줄이세요.
+이유:
+
+위에서 아래로 읽을 수 있어 더 빠른 이해가 가능합니다.
+문맥 전환(시선 이동)으로 인한 인지 부하를 줄입니다.
+
+권장 패턴 A: 인라인 switch
+
+```tsx
+function Page() {
+  const user = useUser();
+
+  // 로직이 여기에 직접 표시됨
+  switch (user.role) {
+    case 'admin':
+      return (
+        <div>
+          <Button disabled={false}>초대</Button>
+          <Button disabled={false}>보기</Button>
+        </div>
+      );
+    case 'viewer':
+      return (
+        <div>
+          <Button disabled={true}>초대</Button> {/* viewer 예시 */}
+          <Button disabled={false}>보기</Button>
+        </div>
+      );
+    default:
+      return null;
+  }
+}
+```
+
+#### 권장 패턴 B: 함께 배치된 간단한 정책 객체
+
+```tsx
+function Page() {
+  const user = useUser();
+  // 간단한 정책이 바로 여기에 정의되어 쉽게 확인 가능
+  const policy = {
+    admin: { canInvite: true, canView: true },
+    viewer: { canInvite: false, canView: true },
+  }[user.role];
+
+  // 역할이 일치하지 않을 수 있는 경우 속성에 접근하기 전에 정책 존재 확인
+  if (!policy) return null;
+
+  return (
+    <div>
+      <Button disabled={!policy.canInvite}>초대</Button>
+      <Button disabled={!policy.canView}>보기</Button>
+    </div>
+  );
+}
+```
+
+## 복잡한 조건식 네이밍
+
+규칙: 복잡한 불린 조건식을 이름이 있는 변수에 할당하세요.
+이유:
+
+조건식의 *의미*를 명시적으로 만듭니다.
+인지 부하를 줄여 가독성과 자체 문서화를 향상시킵니다.
+
+#### 권장 패턴:
+
+(조건식을 이름이 있는 변수에 할당)
+
+```typescript
+const matchedProducts = products.filter((product) => {
+  // 제품이 대상 카테고리에 속하는지 확인
+  const isSameCategory = product.categories.some((category) => category.id === targetCategory.id);
+
+  // 제품 가격이 원하는 범위 내에 있는지 확인
+  const isPriceInRange = product.prices.some((price) => price >= minPrice && price <= maxPrice);
+
+  // 전체 조건이 이제 훨씬 명확함
+  return isSameCategory && isPriceInRange;
+});
+```
+
+가이드: 로직이 복잡하거나, 재사용되거나, 단위 테스트가 필요한 경우 조건식에 이름을 붙이세요.
+매우 간단하고 한 번만 사용되는 조건식에는 이름을 붙이지 마세요.
+
+# 예측 가능성
+
+이름, 매개변수, 문맥을 기반으로 코드가 예상대로 동작하도록 보장합니다.
+반환 타입 표준화
+규칙: 유사한 함수/훅에 일관된 반환 타입을 사용하세요.
+이유:
+
+코드 예측 가능성을 향상시킵니다. 개발자가 반환 값의 형태를 예상할 수 있습니다.
+일관성 없는 타입으로 인한 혼란과 잠재적 오류를 줄입니다.
+
+#### 권장 패턴 1: API 훅 (React Query)
+
+```typescript
+// 항상 Query 객체를 반환
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
+
+// fetchUser가 Promise<UserType>을 반환한다고 가정
+function useUser(): UseQueryResult<UserType, Error> {
+  return useQuery({ queryKey: ['user'], queryFn: fetchUser });
+}
+
+// fetchServerTime이 Promise<Date>를 반환한다고 가정
+function useServerTime(): UseQueryResult<Date, Error> {
+  return useQuery({
+    queryKey: ['serverTime'],
+    queryFn: fetchServerTime,
+  });
+}
+```
+
+#### 권장 패턴 2: 유효성 검사 함수
+
+(일관된 타입 사용, 가능하면 판별 유니온)
+
+```typescript
+type ValidationResult = { ok: true } | { ok: false; reason: string };
+
+function checkIsNameValid(name: string): ValidationResult {
+  if (name.length === 0) return { ok: false, reason: '이름을 입력해주세요.' };
+  if (name.length >= 20) return { ok: false, reason: '이름은 20자를 초과할 수 없습니다.' };
+  return { ok: true };
+}
+
+function checkIsAgeValid(age: number): ValidationResult {
+  if (!Number.isInteger(age)) return { ok: false, reason: '나이는 정수여야 합니다.' };
+  if (age < 18) return { ok: false, reason: '나이는 18세 이상이어야 합니다.' };
+  if (age > 99) return { ok: false, reason: '나이는 99세 이하여야 합니다.' };
+  return { ok: true };
+}
+
+// 사용 시 ok가 false일 때만 'reason'에 안전하게 접근 가능
+const nameValidation = checkIsNameValid(name);
+if (!nameValidation.ok) {
+  console.error(nameValidation.reason);
+}
+```
+
+## 숨겨진 로직 드러내기 (단일 책임)
+
+규칙: 숨겨진 부작용을 피하세요. 함수는 시그니처에서 암시하는 작업만 수행해야 합니다 (SRP).
+이유:
+
+의도하지 않은 부작용 없이 예측 가능한 동작을 유도합니다.
+관심사 분리(SRP)를 통해 더 견고하고 테스트 가능한 코드를 만듭니다.
+
+#### 권장 패턴:
+
+```typescript
+// 함수는 잔액 조회*만* 수행
+async function fetchBalance(): Promise<number> {
+  const balance = await http.get<number>('...');
+  return balance;
+}
+
+// 호출자가 필요한 곳에서 명시적으로 로깅 수행
+async function handleUpdateClick() {
+  const balance = await fetchBalance(); // 조회
+  logging.log('balance_fetched'); // 로그 (명시적 작업)
+  await syncBalance(balance); // 다른 작업
+}
+```
+
+## 고유하고 설명적인 이름 사용 (모호함 피하기)
+
+규칙: 커스텀 래퍼/함수에는 모호함을 피하기 위해 고유하고 설명적인 이름을 사용하세요.
+이유:
+
+모호함을 피하고 예측 가능성을 향상시킵니다.
+개발자가 이름에서 직접 특정 작업(예: 인증 추가)을 이해할 수 있게 합니다.
+
+#### 권장 패턴:
+
+```typescript
+// httpService.ts - 더 명확한 모듈 이름
+import { http as httpLibrary } from '@some-library/http';
+
+export const httpService = {
+  // 고유한 모듈 이름
+  async getWithAuth(url: string) {
+    // 설명적인 함수 이름
+    const token = await fetchToken();
+    return httpLibrary.get(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  },
+};
+
+// fetchUser.ts - 사용 시 인증이 명확히 표시됨
+import { httpService } from './httpService';
+export async function fetchUser() {
+  // 'getWithAuth' 이름이 동작을 명시적으로 표현
+  return await httpService.getWithAuth('...');
+}
+```
+
+# 응집도
+
+관련된 코드를 함께 유지하고 모듈이 잘 정의된 단일 목적을 갖도록 보장합니다.
+폼 응집도 고려
+규칙: 폼 요구사항에 따라 필드 레벨 또는 폼 레벨 응집도를 선택하세요.
+이유:
+
+필드 독립성(필드 레벨)과 폼 통합성(폼 레벨)의 균형을 맞춥니다.
+요구사항에 따라 관련 폼 로직이 적절하게 그룹화되도록 보장합니다.
+
+권장 패턴 (필드 레벨 예시):
+
+```tsx
+// 각 필드가 자체 `validate` 함수 사용
+import { useForm } from 'react-hook-form';
+
+export function Form() {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    /* defaultValues 등 */
+  });
+
+  const onSubmit = handleSubmit((formData) => {
+    console.log('폼 제출:', formData);
+  });
+
+  return (
+    <form onSubmit={onSubmit}>
+      <div>
+        <input
+          {...register('name', {
+            validate: (value) => (value.trim() === '' ? '이름을 입력해주세요.' : true), // 예시 유효성 검사
+          })}
+          placeholder="이름"
+        />
+        {errors.name && <p>{errors.name.message}</p>}
+      </div>
+      <div>
+        <input
+          {...register('email', {
+            validate: (value) =>
+              /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value) ? true : '유효하지 않은 이메일 주소입니다.', // 예시 유효성 검사
+          })}
+          placeholder="이메일"
+        />
+        {errors.email && <p>{errors.email.message}</p>}
+      </div>
+      <button type="submit">제출</button>
+    </form>
+  );
+}
+```
+
+#### 권장 패턴 (폼 레벨 예시):
+
+```tsx
+// 단일 스키마가 전체 폼의 유효성 검사 정의
+import * as z from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const schema = z.object({
+  name: z.string().min(1, '이름을 입력해주세요.'),
+  email: z.string().min(1, '이메일을 입력해주세요.').email('유효하지 않은 이메일입니다.'),
+});
+
+export function Form() {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: { name: '', email: '' },
+  });
+
+  const onSubmit = handleSubmit((formData) => {
+    console.log('폼 제출:', formData);
+  });
+
+  return (
+    <form onSubmit={onSubmit}>
+      <div>
+        <input {...register('name')} placeholder="이름" />
+        {errors.name && <p>{errors.name.message}</p>}
+      </div>
+      <div>
+        <input {...register('email')} placeholder="이메일" />
+        {errors.email && <p>{errors.email.message}</p>}
+      </div>
+      <button type="submit">제출</button>
+    </form>
+  );
+}
+```
+
+**가이드:** 독립적인 유효성 검사, 비동기 확인, 재사용 가능한 필드에는 **필드 레벨**을 선택하세요.
+관련된 필드, 위저드 폼, 상호 의존적인 유효성 검사에는 **폼 레벨**을 선택하세요.
+
+## 기능/도메인별 코드 구성
+
+**규칙:** 디렉터리를 코드 타입이 아닌 기능/도메인별로 구성하세요.
+
+**이유:**
+
+- 관련 파일을 함께 유지하여 응집도를 높입니다.
+- 기능 이해, 개발, 유지보수, 삭제를 단순화합니다.
+
+## 매직 넘버와 로직 연관짓기
+
+규칙: 상수를 관련 로직 근처에 정의하거나 이름으로 명확히 연결하세요.
+이유:
+
+상수를 그것이 나타내는 로직과 연결하여 응집도를 향상시킵니다.
+관련 상수를 업데이트하지 않고 로직만 업데이트하여 발생하는 조용한 실패를 방지합니다.
+
+#### 권장 패턴:
+
+```typescript
+// 상수가 명확히 이름 지어지고 애니메이션 로직 근처에 정의됨
+const ANIMATION_DELAY_MS = 300;
+
+async function onLikeClick() {
+  await postLike(url);
+  // 지연은 상수를 사용하여 애니메이션과의 연결을 유지
+  await delay(ANIMATION_DELAY_MS);
+  await refetchPostLike();
+}
+```
+
+상수가 의존하는 로직과 함께 유지되거나 관계를 보여주는 명확한 이름이 지어지도록 하세요.
+
+# 결합도
+
+코드베이스의 다른 부분 간 의존성을 최소화합니다.
+
+## 추상화와 결합도의 균형 (성급한 추상화 피하기)
+
+규칙: 사용 사례가 달라질 수 있다면 중복의 성급한 추상화를 피하고 낮은 결합도를 선호하세요.
+이유:
+
+잠재적으로 다른 로직을 하나의 추상화로 강제하는 것에서 오는 강한 결합을 피합니다.
+미래의 요구사항이 불확실할 때 일부 중복을 허용하면 결합도를 낮추고 유지보수성을 향상시킬 수 있습니다.
+
+#### 가이드:
+
+추상화하기 전에 로직이 정말로 동일하고 모든 사용 사례에서 동일하게 유지될 가능성이 높은지 고려하세요.
+분기가 가능한 경우(예: 다른 페이지가 useOpenMaintenanceBottomSheet과 같은 공유 훅에서 약간 다른 동작을 필요로 하는 경우),
+처음에는 로직을 분리하여 유지(중복 허용)하면 더 유지보수하기 쉽고 결합도가 낮은 코드를 만들 수 있습니다.
+팀과 트레이드오프를 논의하세요. [여기에는 권장 사항이 단일 패턴이 아닌 상황 인식이므로 특정 '좋은' 코드 예시가 없습니다].
+상태 관리 범위 지정 (지나치게 광범위한 훅 피하기)
+규칙: 광범위한 상태 관리를 더 작고 집중된 훅/컨텍스트로 분리하세요.
+이유:
+
+컴포넌트가 필요한 상태 조각에만 의존하도록 보장하여 결합도를 줄입니다.
+관련 없는 상태 변경으로 인한 불필요한 리렌더링을 방지하여 성능을 향상시킵니다.
+
+#### 권장 패턴:
+
+(집중된 훅, 낮은 결합도)
+
+```typescript
+// cardId 쿼리 파라미터 전용 훅
+import { useQueryParam, NumberParam } from 'use-query-params';
+import { useCallback } from 'react';
+
+export function useCardIdQueryParam() {
+  // 'query'가 원시 파라미터 값을 제공한다고 가정
+  const [cardIdParam, setCardIdParam] = useQueryParam('cardId', NumberParam);
+
+  const setCardId = useCallback(
+    (newCardId: number | undefined) => {
+      setCardIdParam(newCardId, 'replaceIn'); // 또는 원하는 히스토리 동작에 따라 'push'
+    },
+    [setCardIdParam]
+  );
+
+  // 안정적인 반환 튜플 제공
+  return [cardIdParam ?? undefined, setCardId] as const;
+}
+
+// 날짜 범위 등을 위한 별도 훅
+// export function useDateRangeQueryParam() { /* ... */ }
+```
+
+이제 컴포넌트는 cardId가 필요한 경우에만 useCardIdQueryParam을 가져와 사용하며,
+날짜 범위 상태 등으로부터 분리됩니다.
+
+## 컴포지션으로 Props Drilling 제거
+
+규칙: Props Drilling 대신 컴포넌트 컴포지션을 사용하세요.
+이유:
+
+불필요한 중간 의존성을 제거하여 결합도를 크게 줄입니다.
+리팩터링을 쉽게 만들고 더 평평한 컴포넌트 트리에서 데이터 흐름을 명확히 합니다.
+
+#### 권장 패턴:
+
+```tsx
+import React, { useState } from 'react';
+
+// Modal, Input, Button, ItemEditList 컴포넌트가 존재한다고 가정
+
+function ItemEditModal({ open, items, recommendedItems, onConfirm, onClose }) {
+  const [keyword, setKeyword] = useState('');
+
+  // Modal 내에서 children을 직접 렌더링하고, 필요한 곳에만 props 전달
+  return (
+    <Modal open={open} onClose={onClose}>
+      {/* Input과 Button을 직접 렌더링 */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginBottom: '1rem',
+        }}
+      >
+        <Input
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)} // 상태를 여기서 관리
+          placeholder="아이템 검색..."
+        />
+        <Button onClick={onClose}>닫기</Button>
+      </div>
+      {/* ItemEditList를 직접 렌더링하고, 필요한 props 전달 */}
+      <ItemEditList
+        keyword={keyword} // 직접 전달
+        items={items} // 직접 전달
+        recommendedItems={recommendedItems} // 직접 전달
+        onConfirm={onConfirm} // 직접 전달
+      />
+    </Modal>
+  );
+}
+
+// 중간의 ItemEditBody 컴포넌트가 제거되어 결합도가 감소합니다.
+```
