@@ -11,8 +11,15 @@ import React from "react";
  * 실제 게임이 진행되는 페이지입니다.
  */
 export const GamePlayPage: React.FC = () => {
-  const { gameState, gameResult, isPlaying, startGame, selectCard, resetGame } =
-    useGame();
+  const {
+    gameState,
+    gameResult,
+    isPlaying,
+    setGameSettings,
+    startGame,
+    selectCard,
+    resetGame,
+  } = useGame();
   const navigate = useNavigate();
   const [isGameInitialized, setIsGameInitialized] = useState(false);
 
@@ -23,8 +30,9 @@ export const GamePlayPage: React.FC = () => {
 
     if (savedSettings) {
       try {
-        // 게임 설정 유효성 검사 (실제로는 사용하지 않지만 파싱 에러 방지)
-        JSON.parse(savedSettings);
+        // 게임 설정 파싱 및 적용
+        const settings = JSON.parse(savedSettings);
+        setGameSettings(settings);
         // 게임 설정이 있으면 게임 시작
         startGame();
         setIsGameInitialized(true);
@@ -37,7 +45,7 @@ export const GamePlayPage: React.FC = () => {
       // 설정이 없는 경우 설정 페이지로 리다이렉트
       navigate("/");
     }
-  }, [startGame, navigate]);
+  }, [setGameSettings, startGame, navigate]);
 
   // 게임 재시작 핸들러
   const handleRestart = () => {
