@@ -119,21 +119,6 @@ export const BombModal: React.FC<BombModalProps> = ({
             ))}
           </div>
         )}
-
-        {/* 하단 메시지 */}
-        <div
-          className={cn(
-            "mt-6 text-center text-white",
-            "transform transition-all duration-500 delay-300",
-            isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-          )}
-        >
-          <p className="text-2xl sm:text-3xl font-bold mb-2">💥💥💥</p>
-          <p className="text-lg sm:text-xl font-semibold">꽝입니다!</p>
-          <p className="text-sm sm:text-base mt-2 opacity-80">
-            화면을 클릭하여 닫기
-          </p>
-        </div>
       </div>
     </div>
   );
