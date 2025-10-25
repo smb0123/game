@@ -1,6 +1,6 @@
-import { GAME_MESSAGES } from '@/entities/game/constants';
-import type { GameResult, GameState } from '@/entities/game/types';
-import React from 'react';
+import { GAME_MESSAGES } from "@/entities/game/constants";
+import type { GameResult, GameState } from "@/entities/game/types";
+import React from "react";
 
 // 게임 상태 Props
 interface GameStatusProps {
@@ -15,34 +15,38 @@ interface GameStatusProps {
 /**
  * 게임 상태와 결과를 표시하는 컴포넌트
  */
-export const GameStatus: React.FC<GameStatusProps> = ({ gameState, gameResult, onRestart }) => {
+export const GameStatus: React.FC<GameStatusProps> = ({
+  gameState,
+  gameResult,
+  onRestart,
+}) => {
   // 게임 상태에 따른 메시지 결정
   const getStatusMessage = () => {
     switch (gameState.status) {
-      case 'idle':
+      case "idle":
         return GAME_MESSAGES.SELECT_CARDS;
-      case 'playing':
+      case "playing":
         return GAME_MESSAGES.GAME_START;
-      case 'won':
+      case "won":
         return GAME_MESSAGES.GAME_WON;
-      case 'lost':
+      case "lost":
         return GAME_MESSAGES.GAME_LOST;
       default:
-        return '';
+        return "";
     }
   };
 
   // 게임 상태에 따른 스타일 클래스
   const getStatusStyle = () => {
     switch (gameState.status) {
-      case 'won':
-        return 'bg-green-50 border-green-200 text-green-800';
-      case 'lost':
-        return 'bg-red-50 border-red-200 text-red-800';
-      case 'playing':
-        return 'bg-blue-50 border-blue-200 text-blue-800';
+      case "won":
+        return "bg-green-50 border-green-200 text-green-800";
+      case "lost":
+        return "bg-red-50 border-red-200 text-red-800";
+      case "playing":
+        return "bg-blue-50 border-blue-200 text-blue-800";
       default:
-        return 'bg-gray-50 border-gray-200 text-gray-800';
+        return "bg-gray-50 border-gray-200 text-gray-800";
     }
   };
 
@@ -53,7 +57,7 @@ export const GameStatus: React.FC<GameStatusProps> = ({ gameState, gameResult, o
         <h2 className="text-lg font-semibold mb-2">{getStatusMessage()}</h2>
 
         {/* 게임 진행 중일 때 통계 표시 */}
-        {gameState.status === 'playing' && (
+        {gameState.status === "playing" && (
           <div className="text-sm space-y-1">
             <p>선택한 카드: {gameState.selectedCards.length}개</p>
             <p>남은 안전한 카드: {gameState.remainingSafeCards}개</p>
@@ -64,14 +68,33 @@ export const GameStatus: React.FC<GameStatusProps> = ({ gameState, gameResult, o
         {gameResult && (
           <div className="text-sm space-y-1 mt-2">
             <p>총 선택한 카드: {gameResult.totalMoves}개</p>
-            {gameResult.won && <p className="font-semibold">🎉 모든 안전한 카드를 찾았습니다!</p>}
-            {!gameResult.won && <p className="font-semibold">💥 꽝 카드를 선택했습니다!</p>}
+            <p>꽝 카드 개수: {gameResult.bombCards.length}개</p>
+            {gameResult.won && (
+              <div className="space-y-1">
+                <p className="font-semibold text-green-700">
+                  🎉 모든 안전한 카드를 찾았습니다!
+                </p>
+                <p className="text-green-600">
+                  모든 카드가 공개되었습니다. 아래에서 확인해보세요!
+                </p>
+              </div>
+            )}
+            {!gameResult.won && (
+              <div className="space-y-1">
+                <p className="font-semibold text-red-700">
+                  💥 꽝 카드를 선택했습니다!
+                </p>
+                <p className="text-red-600">
+                  모든 카드가 공개되었습니다. 아래에서 확인해보세요!
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>
 
       {/* 게임 재시작 버튼 */}
-      {(gameState.status === 'won' || gameState.status === 'lost') && (
+      {(gameState.status === "won" || gameState.status === "lost") && (
         <div className="text-center mt-4">
           <button
             onClick={onRestart}

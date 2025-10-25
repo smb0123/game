@@ -1,6 +1,6 @@
-import type { Card } from '@/entities/game/types';
-import { GameCard } from '@/shared/ui';
-import React from 'react';
+import type { Card } from "@/entities/game/types";
+import { GameCard } from "@/shared/ui";
+import React from "react";
 
 // 게임 보드 Props
 interface GameBoardProps {
@@ -11,29 +11,39 @@ interface GameBoardProps {
   /** 게임이 진행 중인지 여부 */
   isPlaying: boolean;
   /** 카드 크기 */
-  cardSize?: 'sm' | 'md' | 'lg';
+  cardSize?: "sm" | "md" | "lg";
 }
 
 /**
  * 게임 카드들을 표시하는 보드 컴포넌트
  */
-export const GameBoard: React.FC<GameBoardProps> = ({ cards, onCardSelect, isPlaying, cardSize = 'md' }) => {
+export const GameBoard: React.FC<GameBoardProps> = ({
+  cards,
+  onCardSelect,
+  isPlaying,
+  cardSize = "md",
+}) => {
   // 카드 상태에 따른 GameCard 상태 매핑
   const getCardState = (card: Card) => {
-    if (!card.isRevealed) return 'hidden';
-    if (card.isBomb) return 'bomb';
-    if (card.isSelected) return 'selected';
-    return 'safe';
+    if (!card.isRevealed) return "hidden";
+    if (card.isBomb) return "bomb";
+    if (card.isSelected) return "selected";
+    return "safe";
   };
 
   // 카드 내용 생성
   const getCardContent = (card: Card) => {
     if (!card.isRevealed) return null;
-    if (card.isBomb) return '💣';
+    if (card.isBomb) return "💣";
     if (card.isSelected) {
       // 선택된 안전한 카드의 번호 표시
-      const safeCardIndex = cards.filter((c) => !c.isBomb && c.isSelected).indexOf(card) + 1;
+      const safeCardIndex =
+        cards.filter((c) => !c.isBomb && c.isSelected).indexOf(card) + 1;
       return safeCardIndex;
+    }
+    // 게임이 끝났을 때 선택되지 않은 안전한 카드 표시
+    if (!card.isBomb && !card.isSelected) {
+      return "✓";
     }
     return null;
   };
