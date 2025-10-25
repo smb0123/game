@@ -1,6 +1,6 @@
 import type { Card } from "@/entities/game/types";
-import { GameCard } from "@/shared/ui";
-import React from "react";
+import { BombModal, GameCard } from "@/shared/ui";
+import React, { useState } from "react";
 
 // 게임 보드 Props
 interface GameBoardProps {
@@ -23,6 +23,32 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   isPlaying,
   cardSize = "md",
 }) => {
+  // 화면 흔들림 상태
+  const [isShaking, setIsShaking] = useState(false);
+  // 폭탄 모달 상태
+  const [showBombModal, setShowBombModal] = useState(false);
+
+  // 카드 선택 핸들러 (꽝 카드 선택 시 화면 흔들림 효과 및 폭탄 모달 추가)
+  const handleCardSelect = (cardId: string | number) => {
+    const card = cards.find((c) => c.id === cardId);
+
+    // 꽝 카드 선택 시 효과들
+    if (card && card.isBomb) {
+      setIsShaking(true);
+      setShowBombModal(true);
+
+      // 화면 흔들림 애니메이션 완료 후 상태 리셋
+      setTimeout(() => setIsShaking(false), 500);
+    }
+
+    onCardSelect(cardId);
+  };
+
+  // 폭탄 모달 닫기 핸들러
+  const handleBombModalClose = () => {
+    setShowBombModal(false);
+  };
+
   // 카드 상태에 따른 GameCard 상태 매핑
   const getCardState = (card: Card) => {
     if (!card.isRevealed) return "hidden";
@@ -49,22 +75,35 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      {/* 게임 보드 그리드 */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
-        {cards.map((card) => (
-          <GameCard
-            key={card.id}
-            id={card.id}
-            state={getCardState(card)}
-            content={getCardContent(card)}
-            size={cardSize}
-            clickable={isPlaying && !card.isRevealed}
-            onClick={onCardSelect}
-            className="animate-card-reveal"
-          />
-        ))}
+    <>
+      <div
+        className={`w-full max-w-4xl mx-auto ${
+          isShaking ? "screen-shake" : ""
+        }`}
+      >
+        {/* 게임 보드 그리드 */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
+          {cards.map((card) => (
+            <GameCard
+              key={card.id}
+              id={card.id}
+              state={getCardState(card)}
+              content={getCardContent(card)}
+              size={cardSize}
+              clickable={isPlaying && !card.isRevealed}
+              onClick={handleCardSelect}
+              className="animate-card-reveal"
+            />
+          ))}
+        </div>
       </div>
-    </div>
+
+      {/* 폭탄 모달 */}
+      <BombModal
+        isOpen={showBombModal}
+        onClose={handleBombModalClose}
+        autoCloseDelay={3000}
+      />
+    </>
   );
 };

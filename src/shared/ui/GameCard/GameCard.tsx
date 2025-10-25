@@ -65,11 +65,13 @@ export const GameCard = React.forwardRef<HTMLDivElement, GameCardProps>(
           // 상태별 스타일
           state === "hidden" && "hover:bg-gray-50",
           state === "safe" && "bg-green-100 border-green-200",
-          state === "bomb" && "bg-red-100 border-red-200",
+          state === "bomb" && "bomb-card bomb-explosion",
           state === "selected" &&
             "ring-2 ring-blue-500 shadow-xl bg-yellow-100",
           isClickable && "hover:scale-105 active:scale-95",
           !isClickable && "cursor-default",
+          // 카드 공개 애니메이션
+          state !== "hidden" && "card-reveal",
           className
         )}
         selectable={isClickable}

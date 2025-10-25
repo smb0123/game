@@ -1,6 +1,6 @@
 @import "tailwindcss";
 /* 기본 폰트 설정 */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap");
 
 /* 기본 스타일 리셋 */
 * {
@@ -10,7 +10,7 @@
 body {
   background-color: #f8fafc;
   color: #111827;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   margin: 0;
   min-height: 100vh;
 }
@@ -21,6 +21,215 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Poppins', system-ui, sans-serif;
+  font-family: "Poppins", system-ui, sans-serif;
   font-weight: 600;
+}
+
+/* 꽝 카드 애니메이션 */
+@keyframes bombExplosion {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 20px rgba(239, 68, 68, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+@keyframes screenShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10% {
+    transform: translateX(-5px) rotate(-1deg);
+  }
+  20% {
+    transform: translateX(5px) rotate(1deg);
+  }
+  30% {
+    transform: translateX(-5px) rotate(-1deg);
+  }
+  40% {
+    transform: translateX(5px) rotate(1deg);
+  }
+  50% {
+    transform: translateX(-5px) rotate(-1deg);
+  }
+  60% {
+    transform: translateX(5px) rotate(1deg);
+  }
+  70% {
+    transform: translateX(-5px) rotate(-1deg);
+  }
+  80% {
+    transform: translateX(5px) rotate(1deg);
+  }
+  90% {
+    transform: translateX(-5px) rotate(-1deg);
+  }
+}
+
+@keyframes bombPulse {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.1);
+    filter: brightness(1.3);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes cardReveal {
+  0% {
+    transform: scale(0.8) rotateY(90deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1) rotateY(45deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+/* 애니메이션 클래스 */
+.bomb-explosion {
+  animation: bombExplosion 0.6s ease-out;
+}
+
+.screen-shake {
+  animation: screenShake 0.5s ease-in-out;
+}
+
+.bomb-pulse {
+  animation: bombPulse 0.3s ease-in-out infinite;
+}
+
+.card-reveal {
+  animation: cardReveal 0.4s ease-out;
+}
+
+/* 꽝 카드 특별 스타일 */
+.bomb-card {
+  background: linear-gradient(45deg, #fef2f2, #fecaca);
+  border: 3px solid #ef4444;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.bomb-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(239, 68, 68, 0.1) 0%,
+    transparent 70%
+  );
+  animation: bombPulse 0.5s ease-in-out infinite;
+}
+
+/* 폭탄 모달 애니메이션 */
+@keyframes bombModalAppear {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(-90deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes explosionRipple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes particleBurst {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5) rotate(180deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0.5) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* 폭탄 모달 애니메이션 클래스 */
+.bomb-modal-appear {
+  animation: bombModalAppear 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.bomb-explosion-effect {
+  animation: explosionRipple 1s ease-out infinite;
+}
+
+.particle-burst {
+  animation: particleBurst 1.5s ease-out infinite;
+}
+
+/* 애니메이션 지연 클래스 */
+.animation-delay-100 {
+  animation-delay: 100ms;
+}
+
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+.animation-delay-400 {
+  animation-delay: 400ms;
+}
+
+.animation-delay-500 {
+  animation-delay: 500ms;
+}
+
+.animation-delay-600 {
+  animation-delay: 600ms;
+}
+
+.animation-delay-700 {
+  animation-delay: 700ms;
+}
+
+.animation-delay-800 {
+  animation-delay: 800ms;
 }

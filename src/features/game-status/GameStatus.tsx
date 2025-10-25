@@ -80,13 +80,23 @@ export const GameStatus: React.FC<GameStatusProps> = ({
               </div>
             )}
             {!gameResult.won && (
-              <div className="space-y-1">
-                <p className="font-semibold text-red-700">
-                  💥 꽝 카드를 선택했습니다!
-                </p>
-                <p className="text-red-600">
-                  모든 카드가 공개되었습니다. 아래에서 확인해보세요!
-                </p>
+              <div className="space-y-2">
+                <div className="text-center">
+                  <p className="font-bold text-red-700 text-xl mb-2 animate-pulse">
+                    💥💥💥 BOOM! 💥💥💥
+                  </p>
+                  <p className="font-semibold text-red-600 text-lg">
+                    꽝 카드를 선택했습니다!
+                  </p>
+                </div>
+                <div className="bg-red-100 border border-red-300 rounded-lg p-3">
+                  <p className="text-red-700 text-sm text-center">
+                    💣 폭발 효과가 발생했습니다! 💣
+                  </p>
+                  <p className="text-red-600 text-sm text-center mt-1">
+                    모든 카드가 공개되었습니다. 아래에서 확인해보세요!
+                  </p>
+                </div>
               </div>
             )}
           </div>
