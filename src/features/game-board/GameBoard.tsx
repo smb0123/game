@@ -82,7 +82,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }`}
       >
         {/* 게임 보드 그리드 - 반응형 그리드와 간격 적용 */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 xl:grid-cols-5 gap-10 sm:gap-3 md:gap-4 xl:gap-5 h-full w-full">
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 xl:grid-cols-5 gap-6 sm:gap-4 md:gap-5 xl:gap-6 h-full w-full">
           {cards.map((card) => (
             <GameCard
               key={card.id}
@@ -92,7 +92,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               size={cardSize}
               clickable={isPlaying && !card.isRevealed}
               onClick={handleCardSelect}
-              className="animate-card-reveal w-full h-full aspect-square mx-auto"
+              className="animate-card-reveal w-full h-full aspect-square mx-auto transform transition-all duration-300 hover:rotate-1"
             />
           ))}
         </div>

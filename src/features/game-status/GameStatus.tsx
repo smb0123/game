@@ -51,54 +51,86 @@ export const GameStatus: React.FC<GameStatusProps> = ({
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto mb-4 sm:mb-6 px-2 sm:px-4">
+    <div className="w-full max-w-7xl mx-auto mb-6 sm:mb-8 px-2 sm:px-4">
       {/* 게임 상태 메시지 */}
       <div
-        className={`rounded-lg border p-3 sm:p-4 md:p-6 text-center ${getStatusStyle()}`}
+        className={`rounded-2xl border-2 p-4 sm:p-6 md:p-8 text-center shadow-xl backdrop-blur-sm ${getStatusStyle()}`}
       >
-        <h2 className="text-base sm:text-lg md:text-xl font-semibold mb-2 sm:mb-3">
+        <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6">
           {getStatusMessage()}
         </h2>
 
         {/* 게임 진행 중일 때 통계 표시 */}
         {gameState.status === "playing" && (
-          <div className="text-xs sm:text-sm space-y-1">
-            <p>선택한 카드: {gameState.selectedCards.length}개</p>
-            <p>남은 안전한 카드: {gameState.remainingSafeCards}개</p>
+          <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+            <div className="bg-white/60 rounded-xl p-3 sm:p-4 shadow-lg">
+              <div className="text-2xl mb-1">🎯</div>
+              <div className="text-xs sm:text-sm font-semibold text-gray-600">
+                선택한 카드
+              </div>
+              <div className="text-lg sm:text-xl font-bold text-blue-600">
+                {gameState.selectedCards.length}개
+              </div>
+            </div>
+            <div className="bg-white/60 rounded-xl p-3 sm:p-4 shadow-lg">
+              <div className="text-2xl mb-1">✅</div>
+              <div className="text-xs sm:text-sm font-semibold text-gray-600">
+                남은 안전 카드
+              </div>
+              <div className="text-lg sm:text-xl font-bold text-green-600">
+                {gameState.remainingSafeCards}개
+              </div>
+            </div>
           </div>
         )}
 
         {/* 게임 종료 시 결과 표시 */}
         {gameResult && (
-          <div className="text-xs sm:text-sm space-y-1 mt-2">
-            <p>총 선택한 카드: {gameResult.totalMoves}개</p>
-            <p>꽝 카드 개수: {gameResult.bombCards.length}개</p>
+          <div className="space-y-4 mt-4">
+            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+              <div className="bg-white/60 rounded-xl p-3 sm:p-4 shadow-lg">
+                <div className="text-2xl mb-1">📊</div>
+                <div className="text-xs sm:text-sm font-semibold text-gray-600">
+                  총 선택
+                </div>
+                <div className="text-lg sm:text-xl font-bold text-purple-600">
+                  {gameResult.totalMoves}개
+                </div>
+              </div>
+              <div className="bg-white/60 rounded-xl p-3 sm:p-4 shadow-lg">
+                <div className="text-2xl mb-1">💣</div>
+                <div className="text-xs sm:text-sm font-semibold text-gray-600">
+                  꽝 카드
+                </div>
+                <div className="text-lg sm:text-xl font-bold text-red-600">
+                  {gameResult.bombCards.length}개
+                </div>
+              </div>
+            </div>
+
             {gameResult.won && (
-              <div className="space-y-1">
-                <p className="font-semibold text-green-700 text-sm sm:text-base">
-                  🎉 모든 안전한 카드를 찾았습니다!
+              <div className="bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-300 rounded-xl p-4 sm:p-6 shadow-lg">
+                <div className="text-4xl sm:text-5xl mb-3">🎉</div>
+                <p className="font-bold text-green-800 text-lg sm:text-xl mb-2">
+                  모든 안전한 카드를 찾았습니다!
                 </p>
-                <p className="text-green-600 text-xs sm:text-sm">
-                  모든 카드가 공개되었습니다. 아래에서 확인해보세요!
+                <p className="text-green-700 text-sm sm:text-base">
+                  🏆 완벽한 승리입니다! 🏆
                 </p>
               </div>
             )}
+
             {!gameResult.won && (
-              <div className="space-y-2">
-                <div className="text-center">
-                  <p className="font-bold text-red-700 text-lg sm:text-xl md:text-2xl mb-2 animate-pulse">
-                    💥💥💥 BOOM! 💥💥💥
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-red-100 to-pink-100 border-2 border-red-300 rounded-xl p-4 sm:p-6 shadow-lg">
+                  <div className="text-4xl sm:text-5xl mb-3 animate-bounce">
+                    💥
+                  </div>
+                  <p className="font-bold text-red-800 text-lg sm:text-xl mb-2">
+                    BOOM! 꽝 카드를 선택했습니다!
                   </p>
-                  <p className="font-semibold text-red-600 text-sm sm:text-base md:text-lg">
-                    꽝 카드를 선택했습니다!
-                  </p>
-                </div>
-                <div className="bg-red-100 border border-red-300 rounded-lg p-2 sm:p-3">
-                  <p className="text-red-700 text-xs sm:text-sm text-center">
+                  <p className="text-red-700 text-sm sm:text-base">
                     💣 폭발 효과가 발생했습니다! 💣
-                  </p>
-                  <p className="text-red-600 text-xs sm:text-sm text-center mt-1">
-                    모든 카드가 공개되었습니다. 아래에서 확인해보세요!
                   </p>
                 </div>
               </div>
@@ -109,12 +141,12 @@ export const GameStatus: React.FC<GameStatusProps> = ({
 
       {/* 게임 재시작 버튼 */}
       {(gameState.status === "won" || gameState.status === "lost") && (
-        <div className="text-center mt-3 sm:mt-4">
+        <div className="text-center mt-6 sm:mt-8">
           <button
             onClick={onRestart}
-            className="inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base md:text-lg bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500 shadow-lg"
+            className="inline-flex items-center justify-center rounded-xl font-bold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 focus:ring-blue-500 shadow-xl hover:shadow-2xl transform hover:scale-105"
           >
-            다시 시작
+            🔄 다시 시작하기
           </button>
         </div>
       )}

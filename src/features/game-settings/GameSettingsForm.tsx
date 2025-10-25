@@ -96,73 +96,107 @@ export const GameSettingsForm: React.FC<GameSettingsFormProps> = ({
     safeCards > 0;
 
   return (
-    <div className="w-full max-w-sm sm:max-w-md mx-auto bg-white rounded-xl shadow-card p-4 sm:p-6">
-      <h2 className="text-xl sm:text-2xl font-bold text-center text-gray-800 mb-4 sm:mb-6">
-        게임 설정
-      </h2>
+    <div className="w-full max-w-sm sm:max-w-md mx-auto">
+      {/* 메인 카드 컨테이너 */}
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-6 sm:p-8 relative overflow-hidden">
+        {/* 배경 장식 */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full -translate-y-16 translate-x-16"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-pink-400/20 to-red-400/20 rounded-full translate-y-12 -translate-x-12"></div>
 
-      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-        {/* 총 카드 수 입력 */}
-        <Input
-          type="number"
-          label="총 카드 수"
-          value={totalCards}
-          onChange={(e) => {
-            setTotalCards(e.target.value);
-            setErrors({});
-          }}
-          error={!!errors.totalCards}
-          errorMessage={errors.totalCards}
-          required
-        />
+        <div className="relative z-10">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6 sm:mb-8">
+            🎮 게임 설정
+          </h2>
 
-        {/* 꽝 카드 수 입력 */}
-        <Input
-          type="number"
-          label="꽝 카드 수"
-          value={bombCount}
-          onChange={(e) => {
-            setBombCount(e.target.value);
-            setErrors({});
-          }}
-          error={!!errors.bombCount}
-          errorMessage={errors.bombCount}
-          required
-        />
-
-        {/* 게임 정보 표시 */}
-        {isValidInput && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
-            <h3 className="font-semibold text-blue-800 mb-2 text-sm sm:text-base">
-              게임 정보
-            </h3>
-            <div className="text-xs sm:text-sm text-blue-700 space-y-1">
-              <p>• 총 카드: {totalCards}개</p>
-              <p>• 꽝 카드: {bombCount}개</p>
-              <p>• 안전한 카드: {safeCards}개</p>
-              <p>
-                • 꽝 확률:{" "}
-                {(
-                  (parseInt(bombCount, 10) / parseInt(totalCards, 10)) *
-                  100
-                ).toFixed(1)}
-                %
-              </p>
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            {/* 총 카드 수 입력 */}
+            <div className="space-y-2">
+              <Input
+                type="number"
+                label="🎴 총 카드 수"
+                value={totalCards}
+                onChange={(e) => {
+                  setTotalCards(e.target.value);
+                  setErrors({});
+                }}
+                error={!!errors.totalCards}
+                errorMessage={errors.totalCards}
+                required
+                className="text-center font-semibold text-lg"
+              />
             </div>
-          </div>
-        )}
 
-        {/* 게임 시작 버튼 */}
-        <Button
-          type="submit"
-          variant="primary"
-          size="lg"
-          className="w-full"
-          disabled={!isValidInput || Object.keys(errors).length > 0}
-        >
-          게임 시작
-        </Button>
-      </form>
+            {/* 꽝 카드 수 입력 */}
+            <div className="space-y-2">
+              <Input
+                type="number"
+                label="💣 꽝 카드 수"
+                value={bombCount}
+                onChange={(e) => {
+                  setBombCount(e.target.value);
+                  setErrors({});
+                }}
+                error={!!errors.bombCount}
+                errorMessage={errors.bombCount}
+                required
+                className="text-center font-semibold text-lg"
+              />
+            </div>
+
+            {/* 게임 정보 표시 */}
+            {isValidInput && (
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-4 sm:p-5 shadow-lg">
+                <h3 className="font-bold text-blue-800 mb-3 text-center text-lg">
+                  📊 게임 정보
+                </h3>
+                <div className="grid grid-cols-2 gap-3 text-sm sm:text-base">
+                  <div className="bg-white/60 rounded-lg p-3 text-center">
+                    <div className="text-2xl mb-1">🎴</div>
+                    <div className="font-semibold text-gray-700">총 카드</div>
+                    <div className="text-blue-600 font-bold">
+                      {totalCards}개
+                    </div>
+                  </div>
+                  <div className="bg-white/60 rounded-lg p-3 text-center">
+                    <div className="text-2xl mb-1">💣</div>
+                    <div className="font-semibold text-gray-700">꽝 카드</div>
+                    <div className="text-red-600 font-bold">{bombCount}개</div>
+                  </div>
+                  <div className="bg-white/60 rounded-lg p-3 text-center">
+                    <div className="text-2xl mb-1">✅</div>
+                    <div className="font-semibold text-gray-700">안전 카드</div>
+                    <div className="text-green-600 font-bold">
+                      {safeCards}개
+                    </div>
+                  </div>
+                  <div className="bg-white/60 rounded-lg p-3 text-center">
+                    <div className="text-2xl mb-1">📈</div>
+                    <div className="font-semibold text-gray-700">꽝 확률</div>
+                    <div className="text-orange-600 font-bold">
+                      {(
+                        (parseInt(bombCount, 10) / parseInt(totalCards, 10)) *
+                        100
+                      ).toFixed(1)}
+                      %
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 게임 시작 버튼 */}
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-4 text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+              disabled={!isValidInput || Object.keys(errors).length > 0}
+            >
+              🚀 게임 시작하기
+            </Button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

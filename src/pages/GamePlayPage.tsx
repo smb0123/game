@@ -66,27 +66,34 @@ export const GamePlayPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background-primary py-4 sm:py-6 md:py-8 px-2 sm:px-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 py-4 sm:py-6 md:py-8 px-2 sm:px-4">
       <div className="max-w-7xl mx-auto">
-        {/* 게임 제목과 설정 변경 버튼 */}
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <div className="text-center sm:text-left">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1 sm:mb-2">
-              카드 선택 게임
-            </h1>
-            <p className="text-sm sm:text-base text-gray-600">
-              안전한 카드를 모두 찾아보세요!
-            </p>
-          </div>
-          <div className="flex justify-center sm:justify-end">
-            <Button
-              variant="secondary"
-              onClick={handleChangeSettings}
-              className="flex items-center gap-2 text-xs sm:text-sm"
-              size="sm"
-            >
-              ⚙️ 설정 변경
-            </Button>
+        {/* 게임 헤더 */}
+        <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div className="text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start gap-3 mb-2">
+                <div className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-full shadow-lg">
+                  <span className="text-xl sm:text-2xl">💣</span>
+                </div>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                  카드 선택 게임
+                </h1>
+              </div>
+              <p className="text-sm sm:text-base text-gray-600 font-medium">
+                🎯 안전한 카드를 모두 찾아보세요!
+              </p>
+            </div>
+            <div className="flex justify-center sm:justify-end">
+              <Button
+                variant="secondary"
+                onClick={handleChangeSettings}
+                className="flex items-center gap-2 bg-white/80 hover:bg-white text-gray-700 border border-gray-200 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                size="sm"
+              >
+                ⚙️ 설정 변경
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -98,12 +105,14 @@ export const GamePlayPage: React.FC = () => {
         />
 
         {/* 게임 보드 */}
-        <GameBoard
-          cards={gameState.cards}
-          onCardSelect={selectCard}
-          isPlaying={isPlaying}
-          cardSize="md"
-        />
+        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-4 sm:p-6">
+          <GameBoard
+            cards={gameState.cards}
+            onCardSelect={selectCard}
+            isPlaying={isPlaying}
+            cardSize="md"
+          />
+        </div>
       </div>
     </div>
   );

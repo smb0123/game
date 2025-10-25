@@ -22,15 +22,23 @@ export const GameSettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background-primary py-4 sm:py-6 md:py-8 px-2 sm:px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-4 sm:py-6 md:py-8 px-2 sm:px-4">
       <div className="max-w-7xl mx-auto">
         {/* 게임 제목 */}
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2 sm:mb-3">
+          <div className="inline-block bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-3 rounded-full shadow-lg mb-4">
+            <span className="text-2xl sm:text-3xl">💣</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-3 sm:mb-4">
             카드 선택 게임
           </h1>
-          <p className="text-sm sm:text-base text-gray-600 px-4">
-            안전한 카드를 모두 찾아보세요! 꽝 카드를 선택하면 게임이 끝납니다.
+          <p className="text-base sm:text-lg text-gray-600 px-4 max-w-2xl mx-auto leading-relaxed">
+            🎯{" "}
+            <span className="font-semibold text-gray-700">
+              안전한 카드를 모두 찾아보세요!
+            </span>
+            <br />
+            💥 꽝 카드를 선택하면 게임이 끝납니다
           </p>
         </div>
 
