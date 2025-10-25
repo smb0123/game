@@ -49,9 +49,9 @@ export const GamePlayPage: React.FC = () => {
 
   // 게임 재시작 핸들러
   const handleRestart = () => {
+    // 게임 리셋 후 바로 재시작
     resetGame();
-    // 설정 페이지로 이동
-    navigate("/");
+    startGame();
   };
 
   // 설정 변경 핸들러
@@ -62,14 +62,7 @@ export const GamePlayPage: React.FC = () => {
 
   // 게임이 초기화되지 않았으면 로딩 표시
   if (!isGameInitialized) {
-    return (
-      <div className="min-h-screen bg-background-primary flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">게임을 준비하고 있습니다...</p>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
