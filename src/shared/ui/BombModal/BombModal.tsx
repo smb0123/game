@@ -55,7 +55,7 @@ export const BombModal: React.FC<BombModalProps> = ({
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 flex items-center justify-center",
+        "fixed top-0 left-0 w-full h-screen z-50 flex items-center justify-center",
         "bg-black bg-opacity-50 transition-opacity duration-300",
         isVisible ? "opacity-100" : "opacity-0"
       )}
