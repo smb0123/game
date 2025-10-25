@@ -21,11 +21,6 @@ export const GameSettingsPage: React.FC = () => {
     navigate("/game");
   };
 
-  // 게임 시작 핸들러 (설정 완료 후 자동으로 게임 시작)
-  const handleStartGame = () => {
-    // 게임 시작은 GamePlayPage에서 처리
-  };
-
   return (
     <div className="min-h-screen bg-background-primary py-8 px-4">
       <div className="max-w-6xl mx-auto">
@@ -40,10 +35,7 @@ export const GameSettingsPage: React.FC = () => {
         </div>
 
         {/* 게임 설정 폼 */}
-        <GameSettingsForm
-          onSettingsComplete={handleSettingsComplete}
-          onStartGame={handleStartGame}
-        />
+        <GameSettingsForm onSettingsComplete={handleSettingsComplete} />
       </div>
     </div>
   );

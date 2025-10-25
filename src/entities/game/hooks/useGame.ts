@@ -1,6 +1,6 @@
 import { shuffleArray } from "@/shared/lib/utils";
 import { useCallback, useMemo, useReducer } from "react";
-import { DEFAULT_GAME_SETTINGS, GAME_LIMITS } from "../constants";
+import { DEFAULT_GAME_SETTINGS } from "../constants";
 import type {
   Card,
   GameAction,
@@ -132,31 +132,6 @@ export function useGame() {
   // 게임 설정 업데이트
   const setGameSettings = useCallback((settings: GameSettings) => {
     // 유효성 검사
-    const { totalCards, bombCount } = settings;
-
-    if (
-      totalCards < GAME_LIMITS.MIN_TOTAL_CARDS ||
-      totalCards > GAME_LIMITS.MAX_TOTAL_CARDS
-    ) {
-      throw new Error(
-        `총 카드 수는 ${GAME_LIMITS.MIN_TOTAL_CARDS}개 이상 ${GAME_LIMITS.MAX_TOTAL_CARDS}개 이하여야 합니다.`
-      );
-    }
-
-    if (bombCount < GAME_LIMITS.MIN_BOMB_COUNT || bombCount >= totalCards) {
-      throw new Error(
-        `꽝 카드 수는 ${GAME_LIMITS.MIN_BOMB_COUNT}개 이상 ${totalCards}개 미만이어야 합니다.`
-      );
-    }
-
-    if (bombCount / totalCards > GAME_LIMITS.MAX_BOMB_RATIO) {
-      throw new Error(
-        `꽝 카드 비율은 ${
-          GAME_LIMITS.MAX_BOMB_RATIO * 100
-        }%를 초과할 수 없습니다.`
-      );
-    }
-
     dispatch({ type: "SET_GAME_SETTINGS", payload: settings });
   }, []);
 

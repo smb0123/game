@@ -1,7 +1,7 @@
-import { GAME_LIMITS } from '@/entities/game/constants';
-import type { GameSettings } from '@/entities/game/types';
-import { Button, Input } from '@/shared/ui';
-import React, { useState } from 'react';
+import { GAME_LIMITS } from "@/entities/game/constants";
+import type { GameSettings } from "@/entities/game/types";
+import { Button, Input } from "@/shared/ui";
+import React, { useState } from "react";
 
 // 게임 설정 폼 Props
 interface GameSettingsFormProps {
@@ -9,8 +9,6 @@ interface GameSettingsFormProps {
   initialSettings?: GameSettings;
   /** 설정 완료 핸들러 */
   onSettingsComplete: (settings: GameSettings) => void;
-  /** 게임 시작 핸들러 */
-  onStartGame: () => void;
 }
 
 /**
@@ -19,11 +17,14 @@ interface GameSettingsFormProps {
 export const GameSettingsForm: React.FC<GameSettingsFormProps> = ({
   initialSettings,
   onSettingsComplete,
-  onStartGame,
 }) => {
   // 폼 상태
-  const [totalCards, setTotalCards] = useState(initialSettings?.totalCards.toString() || '12');
-  const [bombCount, setBombCount] = useState(initialSettings?.bombCount.toString() || '3');
+  const [totalCards, setTotalCards] = useState(
+    initialSettings?.totalCards.toString() || "12"
+  );
+  const [bombCount, setBombCount] = useState(
+    initialSettings?.bombCount.toString() || "3"
+  );
   const [errors, setErrors] = useState<{
     totalCards?: string;
     bombCount?: string;
@@ -46,13 +47,25 @@ export const GameSettingsForm: React.FC<GameSettingsFormProps> = ({
     }
 
     // 꽝 카드 수 검증
-    if (isNaN(bombCountNum) || bombCountNum < GAME_LIMITS.MIN_BOMB_COUNT || bombCountNum >= totalCardsNum) {
-      newErrors.bombCount = `꽝 카드 수는 ${GAME_LIMITS.MIN_BOMB_COUNT}개 이상 ${totalCardsNum - 1}개 이하여야 합니다.`;
+    if (
+      isNaN(bombCountNum) ||
+      bombCountNum < GAME_LIMITS.MIN_BOMB_COUNT ||
+      bombCountNum >= totalCardsNum
+    ) {
+      newErrors.bombCount = `꽝 카드 수는 ${
+        GAME_LIMITS.MIN_BOMB_COUNT
+      }개 이상 ${totalCardsNum - 1}개 이하여야 합니다.`;
     }
 
     // 꽝 카드 비율 검증
-    if (!isNaN(totalCardsNum) && !isNaN(bombCountNum) && bombCountNum / totalCardsNum > GAME_LIMITS.MAX_BOMB_RATIO) {
-      newErrors.bombCount = `꽝 카드 비율은 ${GAME_LIMITS.MAX_BOMB_RATIO * 100}%를 초과할 수 없습니다.`;
+    if (
+      !isNaN(totalCardsNum) &&
+      !isNaN(bombCountNum) &&
+      bombCountNum / totalCardsNum > GAME_LIMITS.MAX_BOMB_RATIO
+    ) {
+      newErrors.bombCount = `꽝 카드 비율은 ${
+        GAME_LIMITS.MAX_BOMB_RATIO * 100
+      }%를 초과할 수 없습니다.`;
     }
 
     setErrors(newErrors);
@@ -73,16 +86,20 @@ export const GameSettingsForm: React.FC<GameSettingsFormProps> = ({
     };
 
     onSettingsComplete(settings);
-    onStartGame();
   };
 
   // 안전한 카드 수 계산
   const safeCards = parseInt(totalCards, 10) - parseInt(bombCount, 10);
-  const isValidInput = !isNaN(parseInt(totalCards, 10)) && !isNaN(parseInt(bombCount, 10)) && safeCards > 0;
+  const isValidInput =
+    !isNaN(parseInt(totalCards, 10)) &&
+    !isNaN(parseInt(bombCount, 10)) &&
+    safeCards > 0;
 
   return (
     <div className="max-w-md mx-auto bg-white rounded-xl shadow-card p-6">
-      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">게임 설정</h2>
+      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+        게임 설정
+      </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* 총 카드 수 입력 */}
@@ -90,11 +107,12 @@ export const GameSettingsForm: React.FC<GameSettingsFormProps> = ({
           type="number"
           label="총 카드 수"
           value={totalCards}
-          onChange={(e) => setTotalCards(e.target.value)}
+          onChange={(e) => {
+            setTotalCards(e.target.value);
+            setErrors({});
+          }}
           error={!!errors.totalCards}
           errorMessage={errors.totalCards}
-          min={GAME_LIMITS.MIN_TOTAL_CARDS}
-          max={GAME_LIMITS.MAX_TOTAL_CARDS}
           required
         />
 
@@ -103,11 +121,12 @@ export const GameSettingsForm: React.FC<GameSettingsFormProps> = ({
           type="number"
           label="꽝 카드 수"
           value={bombCount}
-          onChange={(e) => setBombCount(e.target.value)}
+          onChange={(e) => {
+            setBombCount(e.target.value);
+            setErrors({});
+          }}
           error={!!errors.bombCount}
           errorMessage={errors.bombCount}
-          min={GAME_LIMITS.MIN_BOMB_COUNT}
-          max={parseInt(totalCards, 10) - 1}
           required
         />
 
@@ -119,7 +138,14 @@ export const GameSettingsForm: React.FC<GameSettingsFormProps> = ({
               <p>• 총 카드: {totalCards}개</p>
               <p>• 꽝 카드: {bombCount}개</p>
               <p>• 안전한 카드: {safeCards}개</p>
-              <p>• 꽝 확률: {((parseInt(bombCount, 10) / parseInt(totalCards, 10)) * 100).toFixed(1)}%</p>
+              <p>
+                • 꽝 확률:{" "}
+                {(
+                  (parseInt(bombCount, 10) / parseInt(totalCards, 10)) *
+                  100
+                ).toFixed(1)}
+                %
+              </p>
             </div>
           </div>
         )}
