@@ -85,7 +85,7 @@ export const BombModal: React.FC<BombModalProps> = ({
             "relative z-10 flex flex-col items-center justify-center",
             "bg-linear-to-br from-red-500 to-red-700",
             "rounded-full shadow-2xl border-4 border-red-800",
-            "w-32 h-32 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64",
+            "w-32 h-32 sm:w-48 sm:h-48 md:w-56 md:h-56 xl:w-64 xl:h-64",
             "transform transition-all duration-500",
             showExplosion && "bomb-pulse"
           )}
