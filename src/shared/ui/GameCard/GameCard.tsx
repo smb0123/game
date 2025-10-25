@@ -58,10 +58,12 @@ export const GameCard = React.forwardRef<HTMLDivElement, GameCardProps>(
         className={cn(
           // 게임 카드 전용 스타일
           "cursor-pointer select-none flex items-center justify-center font-bold text-gray-700",
-          // 크기별 스타일
-          size === "sm" && "w-16 h-20 text-sm",
-          size === "md" && "w-20 h-24 text-base",
-          size === "lg" && "w-24 h-28 text-lg",
+          // 크기별 스타일 - 반응형 적용
+          size === "sm" && "w-12 h-16 sm:w-16 sm:h-20 text-xs sm:text-sm",
+          size === "md" &&
+            "w-16 h-20 sm:w-24 sm:h-24 md:w-24 md:h-28 text-sm sm:text-base",
+          size === "lg" &&
+            "w-20 h-24 sm:w-24 sm:h-28 md:w-28 md:h-32 text-base sm:text-lg",
           // 상태별 스타일
           state === "hidden" && "hover:bg-gray-50",
           state === "safe" && "bg-green-100 border-green-200",

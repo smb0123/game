@@ -1,14 +1,15 @@
-import { cn } from '@/shared/lib/utils';
-import React from 'react';
+import { cn } from "@/shared/lib/utils";
+import React from "react";
 
 // 버튼 크기 타입 정의
-export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonSize = "sm" | "md" | "lg";
 
 // 버튼 변형 타입 정의
-export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'success';
+export type ButtonVariant = "primary" | "secondary" | "danger" | "success";
 
 // 버튼 Props 인터페이스
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** 버튼 크기 */
   size?: ButtonSize;
   /** 버튼 스타일 변형 */
@@ -24,7 +25,18 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
  * 다양한 크기와 스타일 변형을 지원합니다.
  */
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, size = 'md', variant = 'primary', loading = false, disabled, children, ...props }, ref) => {
+  (
+    {
+      className,
+      size = "md",
+      variant = "primary",
+      loading = false,
+      disabled,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     // 로딩 중이거나 비활성화된 경우 disabled 처리
     const isDisabled = disabled || loading;
 
@@ -32,17 +44,21 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         className={cn(
           // 기본 버튼 스타일
-          'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
-          // 크기별 스타일
-          size === 'sm' && 'px-3 py-1.5 text-sm',
-          size === 'md' && 'px-4 py-2 text-base',
-          size === 'lg' && 'px-6 py-3 text-lg',
+          "inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed",
+          // 크기별 스타일 - 반응형 적용
+          size === "sm" && "px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm",
+          size === "md" && "px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base",
+          size === "lg" && "px-4 py-2 sm:px-6 sm:py-3 text-base sm:text-lg",
           // 변형별 스타일
-          variant === 'primary' && 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500 shadow-lg',
-          variant === 'secondary' && 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500',
-          variant === 'danger' && 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500',
-          variant === 'success' && 'bg-green-500 text-white hover:bg-green-600 focus:ring-green-500',
-          loading && 'cursor-wait',
+          variant === "primary" &&
+            "bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500 shadow-lg",
+          variant === "secondary" &&
+            "bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500",
+          variant === "danger" &&
+            "bg-red-500 text-white hover:bg-red-600 focus:ring-red-500",
+          variant === "success" &&
+            "bg-green-500 text-white hover:bg-green-600 focus:ring-green-500",
+          loading && "cursor-wait",
           className
         )}
         disabled={isDisabled}
@@ -56,7 +72,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             fill="none"
             viewBox="0 0 24 24"
           >
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
             <path
               className="opacity-75"
               fill="currentColor"
@@ -70,4 +93,4 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   }
 );
 
-Button.displayName = 'Button';
+Button.displayName = "Button";

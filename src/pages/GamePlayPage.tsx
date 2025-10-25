@@ -66,23 +66,28 @@ export const GamePlayPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background-primary py-8 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-background-primary py-4 sm:py-6 md:py-8 px-2 sm:px-4">
+      <div className="max-w-7xl mx-auto">
         {/* 게임 제목과 설정 변경 버튼 */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="text-center sm:text-left">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1 sm:mb-2">
               카드 선택 게임
             </h1>
-            <p className="text-gray-600">안전한 카드를 모두 찾아보세요!</p>
+            <p className="text-sm sm:text-base text-gray-600">
+              안전한 카드를 모두 찾아보세요!
+            </p>
           </div>
-          <Button
-            variant="secondary"
-            onClick={handleChangeSettings}
-            className="flex items-center gap-2"
-          >
-            ⚙️ 설정 변경
-          </Button>
+          <div className="flex justify-center sm:justify-end">
+            <Button
+              variant="secondary"
+              onClick={handleChangeSettings}
+              className="flex items-center gap-2 text-xs sm:text-sm"
+              size="sm"
+            >
+              ⚙️ 설정 변경
+            </Button>
+          </div>
         </div>
 
         {/* 게임 상태 표시 */}

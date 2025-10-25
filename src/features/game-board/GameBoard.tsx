@@ -77,12 +77,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   return (
     <>
       <div
-        className={`w-full max-w-4xl mx-auto ${
+        className={`w-full max-w-7xl mx-auto px-2 sm:px-4 ${
           isShaking ? "screen-shake" : ""
         }`}
       >
-        {/* 게임 보드 그리드 */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
+        {/* 게임 보드 그리드 - 반응형 그리드와 간격 적용 */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-10 sm:gap-3 md:gap-4 lg:gap-5 h-full w-full">
           {cards.map((card) => (
             <GameCard
               key={card.id}
@@ -92,7 +92,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               size={cardSize}
               clickable={isPlaying && !card.isRevealed}
               onClick={handleCardSelect}
-              className="animate-card-reveal"
+              className="animate-card-reveal w-full h-full aspect-square mx-auto"
             />
           ))}
         </div>

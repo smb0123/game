@@ -96,12 +96,12 @@ export const GameSettingsForm: React.FC<GameSettingsFormProps> = ({
     safeCards > 0;
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-xl shadow-card p-6">
-      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+    <div className="w-full max-w-sm sm:max-w-md mx-auto bg-white rounded-xl shadow-card p-4 sm:p-6">
+      <h2 className="text-xl sm:text-2xl font-bold text-center text-gray-800 mb-4 sm:mb-6">
         게임 설정
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
         {/* 총 카드 수 입력 */}
         <Input
           type="number"
@@ -132,9 +132,11 @@ export const GameSettingsForm: React.FC<GameSettingsFormProps> = ({
 
         {/* 게임 정보 표시 */}
         {isValidInput && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-semibold text-blue-800 mb-2">게임 정보</h3>
-            <div className="text-sm text-blue-700 space-y-1">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
+            <h3 className="font-semibold text-blue-800 mb-2 text-sm sm:text-base">
+              게임 정보
+            </h3>
+            <div className="text-xs sm:text-sm text-blue-700 space-y-1">
               <p>• 총 카드: {totalCards}개</p>
               <p>• 꽝 카드: {bombCount}개</p>
               <p>• 안전한 카드: {safeCards}개</p>

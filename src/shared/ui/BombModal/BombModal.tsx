@@ -73,9 +73,9 @@ export const BombModal: React.FC<BombModalProps> = ({
         {/* 폭발 효과 배경 */}
         {showExplosion && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="bomb-explosion-effect w-96 h-96 rounded-full bg-red-500 opacity-20 animate-ping" />
-            <div className="bomb-explosion-effect w-80 h-80 rounded-full bg-orange-500 opacity-30 animate-ping animation-delay-100" />
-            <div className="bomb-explosion-effect w-64 h-64 rounded-full bg-yellow-500 opacity-40 animate-ping animation-delay-200" />
+            <div className="bomb-explosion-effect w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-full bg-red-500 opacity-20 animate-ping" />
+            <div className="bomb-explosion-effect w-56 h-56 sm:w-72 sm:h-72 md:w-80 md:h-80 rounded-full bg-orange-500 opacity-30 animate-ping animation-delay-100" />
+            <div className="bomb-explosion-effect w-48 h-48 sm:w-64 sm:h-64 md:w-64 md:h-64 rounded-full bg-yellow-500 opacity-40 animate-ping animation-delay-200" />
           </div>
         )}
 
@@ -85,16 +85,18 @@ export const BombModal: React.FC<BombModalProps> = ({
             "relative z-10 flex flex-col items-center justify-center",
             "bg-linear-to-br from-red-500 to-red-700",
             "rounded-full shadow-2xl border-4 border-red-800",
-            "w-48 h-48 sm:w-56 sm:h-56",
+            "w-32 h-32 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64",
             "transform transition-all duration-500",
             showExplosion && "bomb-pulse"
           )}
         >
           {/* 폭탄 이모지 */}
-          <div className="text-6xl sm:text-7xl mb-2 animate-bounce">💣</div>
+          <div className="text-4xl sm:text-6xl md:text-7xl mb-1 sm:mb-2 animate-bounce">
+            💣
+          </div>
 
           {/* BOOM 텍스트 */}
-          <div className="text-white font-bold text-xl sm:text-2xl animate-pulse">
+          <div className="text-white font-bold text-lg sm:text-xl md:text-2xl animate-pulse">
             BOOM!
           </div>
         </div>
