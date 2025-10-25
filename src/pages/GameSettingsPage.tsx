@@ -9,7 +9,7 @@ import React from "react";
  * 사용자가 게임 설정을 입력하고 게임을 시작하는 페이지입니다.
  */
 export const GameSettingsPage: React.FC = () => {
-  const { setGameSettings } = useGame();
+  const { setGameSettings, gameState } = useGame();
   const navigate = useNavigate();
 
   // 게임 설정 완료 핸들러
@@ -35,7 +35,10 @@ export const GameSettingsPage: React.FC = () => {
         </div>
 
         {/* 게임 설정 폼 */}
-        <GameSettingsForm onSettingsComplete={handleSettingsComplete} />
+        <GameSettingsForm
+          initialSettings={gameState.settings}
+          onSettingsComplete={handleSettingsComplete}
+        />
       </div>
     </div>
   );

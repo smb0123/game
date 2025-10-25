@@ -6,7 +6,7 @@ import React, { useState } from "react";
 // 게임 설정 폼 Props
 interface GameSettingsFormProps {
   /** 초기 설정값 */
-  initialSettings?: GameSettings;
+  initialSettings: GameSettings;
   /** 설정 완료 핸들러 */
   onSettingsComplete: (settings: GameSettings) => void;
 }
@@ -20,10 +20,10 @@ export const GameSettingsForm: React.FC<GameSettingsFormProps> = ({
 }) => {
   // 폼 상태
   const [totalCards, setTotalCards] = useState(
-    initialSettings?.totalCards.toString() || "12"
+    initialSettings.totalCards.toString()
   );
   const [bombCount, setBombCount] = useState(
-    initialSettings?.bombCount.toString() || "3"
+    initialSettings.bombCount.toString()
   );
   const [errors, setErrors] = useState<{
     totalCards?: string;
